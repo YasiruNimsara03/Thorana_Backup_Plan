@@ -364,6 +364,7 @@ warning_navigate.addEventListener("click", () => {
 
 nav_btn.addEventListener("click", () => {
   if (drawRoute) {
+    autoInfo.close();
     nav_btn.style.display = "none";
     map.setZoom(10);
     
@@ -532,6 +533,7 @@ let markers = [];
 more_cont.addEventListener("click", () => {
   more.classList.toggle("show-more");
   more_cont.classList.toggle("show-more-cont");
+  autoInfo.close();
   markers.forEach(marker => marker.setMap(null));
   markers = [];
   if (is3Dshow){
@@ -716,7 +718,7 @@ function showPlaces(type) {
 
     marker.addListener("click", () => {
       drawRoute = false;
-
+      infoWin.close();
       map.setCenter({ lat: each_lat, lng: each_lng });
       map.setZoom(20);
 
@@ -735,6 +737,7 @@ function showPlaces(type) {
   // Auto-open Street View if only one place
   if (places.length === 1) {
     drawRoute = false;
+    infoWin.close();
     map.setCenter({ lat: places[0], lng: places[0].lng });
     map.setZoom(20);
     AUTO_DESTINATION = {lat: places[0].lat, lng: places[0].lng}
@@ -869,16 +872,7 @@ streetview_cont.addEventListener("touchend", () => {
 });
 
 function openStreetView(place) {
-  if (place.name === "Thorana"){
-    if (is3Dshow) return;
-    is3Dshow = true;
-    streetview_cont.style.display = "none";
-    _3d_cont.style.display = "block";
-    streetview_3d.style.display = "block";
-    streetview_3d.innerHTML = "";
-    show3Dmodel();
-  } else {
-    // if (isVideoShow) return;
+  // if (isVideoShow) return;
     isVideoShow = true;
     _3d_cont.style.display = "none";
     streetview_cont.style.display = "block";
@@ -905,7 +899,6 @@ function openStreetView(place) {
     streetview_video.onerror = () => {
       console.log("video error.");
     };
-  }
 }
 
 function removeVideo(){
@@ -967,6 +960,7 @@ function cleanMaterial(material) {
 
 async function locateUser() {
   loader_nav.style.display = "flex";
+  autoInfo.close();
   let pos = null;
   try {
     if (!currentLat || !currentLng) {
@@ -1177,8 +1171,6 @@ async function navigate_auto() {
       strokeColor: "white"
     }
   });
-
-  infoWin.close();
 
   const sikka = findSikkaByLatLng(destination.lat, destination.lng);
 
