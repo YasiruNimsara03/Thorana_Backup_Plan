@@ -4,8 +4,10 @@ let is3Dshow = false;
 let isVideoShow = false;
 let directionsService;
 let infoWindow = null;
+let infoWin = null;
 let currentMarker = null;
 let userMarker = null;
+let endMarker = null;
 let panorama = null;
 let currentLat = null;
 let currentLng = null;
@@ -67,8 +69,11 @@ const animation = document.getElementById("ani-cont");
 
 let qrstart = null;
 let qrend = null;
+let autostart = null;
+let autoend = null;
 let startInfo = null;
 let endInfo = null;
+let autoInfo = null;
 
 function isValidLatLng(lat, lng) {
   return typeof lat === "number" && typeof lng === "number" &&  !isNaN(lat) && !isNaN(lng);
@@ -398,29 +403,29 @@ nav_btn.addEventListener("click", () => {
   markers = [];
 });
 
-function show_sikka_points() {
-  const sikka_points = [
-    {place: "Colombo Halt 01", lat: 7.265605625646994, lng: 80.59574492748523, sikka1: "Geeth", sikka2: "Althaf"},
-    {place: "Colombo Halt 02", lat: 7.265539108835222, lng: 80.59598900850628, sikka1: "Kaveen", sikka2: "Bometh"},
-    {place: "Galaha Junction", lat: 7.265580379799675, lng: 80.59667092902211, sikka1: "Krishan", sikka2: "Theekshana"},
-    {place: "Medical Faculty", lat: 7.263029575538976, lng: 80.5983716659132, sikka1: "Bingun", sikka2: "Arham"},
-    {place: "Wijewardhana Hall", lat: 7.260736962351374, lng: 80.59974725113602, sikka1: "Isuru", sikka2: "Achalitha"},
+const sikka_points = [
+    {place: "Colombo Halt 01", lat: 7.265605625646994, lng: 80.59574492748523, sikka1: "Geeth", sikka2: "Althaf", sikka1_no: "0743872070", sikka2_no: "0756418890"},
+    {place: "Colombo Halt 02", lat: 7.265539108835222, lng: 80.59598900850628, sikka1: "Kaveen", sikka2: "Bometh", sikka1_no: "0754770670", sikka2_no: "0716053616"},
+    {place: "Galaha Junction", lat: 7.265580379799675, lng: 80.59667092902211, sikka1: "Krishan", sikka2: "Theekshana", sikka1_no: "0769470571", sikka2_no: "0728476584"},
+    {place: "Medical Faculty", lat: 7.263029575538976, lng: 80.5983716659132, sikka1: "Bingun", sikka2: "Arham", sikka1_no: "0769848159", sikka2_no: "0769007323"},
+    {place: "Wijewardhana Hall", lat: 7.260736962351374, lng: 80.59974725113602, sikka1: "Isuru", sikka2: "Achalitha", sikka1_no: "0767633875", sikka2_no: "0776835215"},
     // {place: "Near the Ground car Park", lat: 7.258576468051648, lng: 80.59874947019904, sikka1: "", sikka2: ""},
-    {place: "Alwis pond", lat: 7.2587760369564185, lng: 80.59960512922707, sikka1: "Anjana", sikka2: "Sejinthan"},
-    {place: "Hela Bojun", lat: 7.262394596711491, lng: 80.59619015015559, sikka1: "Binuka", sikka2: "Kayoj"},
-    {place: "Near the preschool", lat: 7.258922322141049, lng: 80.5953386656956, sikka1: "Randima", sikka2: "Rushi"},
-    {place: "Otu Gaha", lat: 7.255459383699053, lng: 80.5990955006636, sikka1: "Duminda", sikka2: "Hasitha"},
-    {place: "Rajathel Mawatha", lat: 7.255931607497495, lng: 80.5991273150183, sikka1: "Sadika", sikka2: "Shashidaran"},
-    {place: "Rasthiyadu Mawatha", lat: 7.255962490007838, lng: 80.59675630838161, sikka1: "Hansamal", sikka2: "Dinukshan"},
-    {place: "WUS", lat: 7.255968490117731, lng: 80.5960639730417, sikka1: "Anushka", sikka2: "Nirosha"},
-    {place: "ATM", lat: 7.253776295547575, lng: 80.59724705400275, sikka1: "Hirusha", sikka2: "Hasini"},
+    {place: "Alwis pond", lat: 7.2587760369564185, lng: 80.59960512922707, sikka1: "Anjana", sikka2: "Sejinthan", sikka1_no: "0762731128", sikka2_no: ""},
+    {place: "Hela Bojun", lat: 7.262394596711491, lng: 80.59619015015559, sikka1: "Binuka", sikka2: "Kayoj", sikka1_no: "", sikka2_no: "0764746821"},
+    {place: "Near the preschool", lat: 7.258922322141049, lng: 80.5953386656956, sikka1: "Randima", sikka2: "Rushi", sikka1_no: "0783544968", sikka2_no: "0776249887"},
+    {place: "Otu Gaha", lat: 7.255459383699053, lng: 80.5990955006636, sikka1: "Duminda", sikka2: "Hasitha", sikka1_no: "0710635408", sikka2_no: "0711137755"},
+    {place: "Rajathel Mawatha", lat: 7.255931607497495, lng: 80.5991273150183, sikka1: "Sadika", sikka2: "Shashidaran", sikka1_no: "0704172379", sikka2_no: ""},
+    {place: "Rasthiyadu Mawatha", lat: 7.255962490007838, lng: 80.59675630838161, sikka1: "Hansamal", sikka2: "Dinukshan", sikka1_no: "0704114208", sikka2_no: ""},
+    {place: "WUS", lat: 7.255968490117731, lng: 80.5960639730417, sikka1: "Anushka", sikka2: "Nirosha", sikka1_no: "0703013754", sikka2_no: ""},
+    {place: "ATM", lat: 7.253776295547575, lng: 80.59724705400275, sikka1: "Hirusha", sikka2: "Hasini", sikka1_no: "0762846205", sikka2_no: "0756418890"},
     // {place: "Near the Sir Ivor Jennings Statue", lat: 7.253454495381876, lng: 80.59775536149242, sikka1: "Bingun", sikka2: "Randima"},
-    {place: "Wala", lat: 7.251333776221646, lng: 80.59767307009217, sikka1: "Hirusha", sikka2: "Anojan"},
-    {place: "Akbar Bridge", lat: 7.252751019772638, lng: 80.5936339731747, sikka1: "Malindu", sikka2: "Yalisan"},
-    {place: "Akbar Halt", lat: 7.25234727239802, lng: 80.59346817433996, sikka1: "Dihen", sikka2: "Umar"},
-    {place: "Gymnasium Car Park", lat: 7.255633537860069, lng: 80.59474840204452, sikka1: "Yasiru", sikka2: "Charith"},
+    {place: "Wala", lat: 7.251333776221646, lng: 80.59767307009217, sikka1: "Hirusha", sikka2: "Anojan", sikka1_no: "0712583582", sikka2_no: ""},
+    {place: "Akbar Bridge", lat: 7.252751019772638, lng: 80.5936339731747, sikka1: "Malindu", sikka2: "Yalisan", sikka1_no: "0715870838", sikka2_no: ""},
+    {place: "Akbar Halt", lat: 7.25234727239802, lng: 80.59346817433996, sikka1: "Dihen", sikka2: "Umar", sikka1_no: "", sikka2_no: "0774278808"},
+    {place: "Gymnasium Car Park", lat: 7.255633537860069, lng: 80.59474840204452, sikka1: "Yasiru", sikka2: "Charith", sikka1_no: "0714799732", sikka2_no: "0787888538"},
   ];
 
+function show_sikka_points() {
   sikka_points.forEach(point => {
     const marker = new google.maps.Marker({
       position: { lat: point.lat, lng: point.lng },
@@ -451,75 +456,75 @@ function show_sikka_points() {
 
 const endPoints = {
   wus: [
-    {name: "WUS", lat: 7.256802599256521, lng: 80.59595346711528, videoName: "can-wus"}
+    {name: "WUS", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   thorana: [
-    {name: "Thorana", lat: 7.256651710575668, lng: 80.59560151112828, videoName: "thorana"}
+    {name: "Thorana", lat: 7.255633537860069, lng: 80.59474840204452}
   ],
   washrooms: [
-    {name: "WUS", lat: 7.2562507250160015, lng: 80.5961705982571, videoName: "wr-wus"},
-    {name: "Gymnasium", lat: 7.2560086652170925, lng: 80.59522856725818, videoName: "wr-gym"},
-    {name: "Auditorium", lat: 7.257178054130082, lng: 80.59534792556126, videoName: "wr-auditorium"},
-    {name: "Mainhall", lat: 7.257473394196346, lng: 80.59487853898825, videoName: "wr-mainhall"},
-    {name: "AB Hall", lat: 7.256760799590767, lng: 80.59445588178987, videoName: "wr-abhall"}
+    {name: "WUS", lat: 7.255968490117731, lng: 80.5960639730417},
+    {name: "Gymnasium", lat: 7.255633537860069, lng: 80.59474840204452},
+    {name: "Auditorium", lat: 7.255968490117731, lng: 80.5960639730417},
+    {name: "Mainhall", lat: 7.255968490117731, lng: 80.5960639730417},
+    {name: "AB Hall", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   canteens: [
-    {name: "Milkbar", lat: 7.255566329181511, lng: 80.59949324926704, videoName: "can-milkbar"},
-	  {name: "WUS", lat: 7.256372657255441, lng: 80.596216506368, videoName: "can-wus"},
-	  {name: "JuiceBar WUS", lat: 7.256318777532445, lng: 80.59593286277762, videoName: "can-juicebar"},
-	  {name: "Gemba", lat: 7.254666768039756, lng: 80.59778535892463, videoName: "can-gemba"},
-    {name: "Hela Bojun", lat: 7.26221564255007, lng: 80.59622403185925, videoName: "can-helabojun"}
+    {name: "Milkbar", lat: 7.255459383699053, lng: 80.5990955006636},
+	  {name: "WUS", lat: 7.255968490117731, lng: 80.5960639730417},
+	  {name: "JuiceBar WUS", lat: 7.255968490117731, lng: 80.5960639730417},
+	  {name: "Gemba", lat: 7.255931607497495, lng: 80.5991273150183},
+    {name: "Hela Bojun", lat: 7.262394596711491, lng: 80.5961901501555}
   ],
   auditorium: [
-    {name: "Auditorium", lat: 7.257040622376647, lng: 80.59543755381374, videoName: "auditorium"}
+    {name: "Auditorium", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   facBoard: [
-    {name: "Faculty_Board", lat: 7.257341795134218, lng: 80.59597970541614, videoName: "facultyboard"}
+    {name: "Faculty_Board", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   senate: [
-    {name: "Senate", lat: 7.254648248489984, lng: 80.59666274520463, videoName: "senate"}
+    {name: "Senate", lat: 7.253776295547575, lng: 80.59724705400275}
   ],
   library: [
-    {name: "Library", lat: 7.2548132141597925, lng: 80.59678344460478, videoName: "library"}
+    {name: "Library", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   gym: [
-    {name: "Gymnasium", lat: 7.2559475780815355, lng: 80.59506841908592, videoName: "gymnasium"}
+    {name: "Gymnasium", lat: 7.255633537860069, lng: 80.59474840204452}
   ],
   ictLab: [
-    {name: "ICT Lab", lat: 7.256345356957031, lng: 80.59564643513052, videoName: "ictlab"}
+    {name: "ICT Lab", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   AB: [
-    {name: "AB_Hall", lat: 7.256826659010892, lng: 80.59452515625581, videoName: "abhall"}
+    {name: "AB_Hall", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   mainhall: [
-    {name: "Main_Hall", lat: 7.257269834060006, lng: 80.59496965407715, videoName: "mainhall"}
+    {name: "Main_Hall", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   ground: [
-    {name: "Ground", lat: 7.257828503537026, lng: 80.59712811500161, videoName: "ground"}
+    {name: "Ground", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   boc: [
-    {name: "BOC", lat: 7.25377249964832, lng: 80.5971319747589, videoName: "boc"}
+    {name: "BOC", lat: 7.253776295547575, lng: 80.59724705400275}
   ],
   peoples: [
-    {name: "Peoples", lat: 7.25378048187531, lng: 80.5970957649357, videoName: "peoples"}
+    {name: "Peoples", lat: 7.253776295547575, lng: 80.59724705400275}
   ],
   carPark: [
-    {name: "Gymnasium", lat: 7.255991428104067, lng: 80.59527546177668, videoName: "cp-gym"},
-    {name: "Gemba", lat: 7.254633488902085, lng: 80.59762307713538, videoName: "cp-gemba"},
-    {name: "Wala", lat: 7.25118305375382, lng: 80.59753291756482, videoName: "cp-wala"},
-    {name: "WUS", lat: 7.2560947082981855, lng: 80.59649708653185, videoName: "cp-wus"}
+    {name: "Gymnasium", lat: 7.255633537860069, lng: 80.59474840204452},
+    {name: "Gemba", lat: 7.255962490007838, lng: 80.59675630838161},
+    {name: "Wala", lat: 7.251333776221646, lng: 80.59767307009217},
+    {name: "WUS", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   communication: [
-    {name: "Communication", lat: 7.256321535356321, lng: 80.59601764166456, videoName: "communication"}
+    {name: "Communication", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   geography: [
-    {name: "Geography_Building", lat: 7.255950363750723, lng: 80.59635224724673, videoName: "geographybuilding"}
+    {name: "Geography_Building", lat: 7.255968490117731, lng: 80.5960639730417}
   ],
   jamesPeiris: [
-    {name: "James_Peiris_Hostel", lat: 7.25024835433787, lng: 80.59760352414312, videoName: "jamespeirishostel"}
+    {name: "James_Peiris_Hostel", lat: 7.251333776221646, lng: 80.59767307009217}
   ],
   nadan: [
-    {name: "sarasavi_Medura", lat: 7.2465419634199035, lng: 80.59618829293913, videoName: "sarasaviMedura"}
+    {name: "sarasavi_Medura", lat: 7.251333776221646, lng: 80.59767307009217}
   ]
 }
 
@@ -702,7 +707,7 @@ function showPlaces(type) {
 
     const content = place_.name.split(" ").map(word => `${word}<br>`).join(""); 
     // const contentId = `info-${each_lat}-${each_lng}`.replace(/\./g, "_");
-    const infoWin = new google.maps.InfoWindow({
+    infoWin = new google.maps.InfoWindow({
       content: `<div style="background:white;border-radius:20px;font-weight:800;font-size:16px;justify-content:center;align-items:center;display:flex;">${content}</div>
       <div style="background:white;border-radius:20px;font-weight:300;font-size:8px;justify-content:center;align-items:center;display:flex;">Click the pin</div>`
     });
@@ -1022,7 +1027,7 @@ function navigate_user_to_WUS() {
 
   const startPoint = {lat: parseFloat(userLat), lng: parseFloat(userLng)};
 
-  AUTO_DESTINATION = {lat: 7.256788272532294, lng: 80.5959318035128};
+  AUTO_DESTINATION = {lat: 7.255968490117731, lng: 80.5960639730417};
 
   // QR code method
   navigate_QR(startPoint, AUTO_DESTINATION);
@@ -1096,6 +1101,23 @@ function navigate_QR(startPoint, endPoint) {
   drawRoadRoute("RouteQR", startPoint, endPoint, "#0BA6DF");
 }
 
+function findSikkaByLatLng(targetLat, targetLng) {
+  for (let i = 0; i < sikka_points.length; i++) {
+    if (
+      sikka_points[i].lat === targetLat &&
+      sikka_points[i].lng === targetLng
+    ) {
+      return {
+        sikka1: sikka_points[i].sikka1,
+        sikka2: sikka_points[i].sikka2,
+        sikka1_no: sikka_points[i].sikka1_no,
+        sikka2_no: sikka_points[i].sikka2_no
+      };
+    }
+  }
+  return null;
+}
+
 async function navigate_auto() {
   let pos = null;
 
@@ -1126,7 +1148,60 @@ async function navigate_auto() {
     });
   }
 
-  userMarker.setPosition(pos);
+  // Start marker
+  autostart = new google.maps.Marker({
+    position: pos,
+    map,
+    title: "Start here",
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 8,
+      fillColor: "#2e94e7",
+      fillOpacity: 1,
+      strokeWeight: 2,
+      strokeColor: "white"
+    }
+  });
+
+  // Destination marker
+  autoend = new google.maps.Marker({
+    position: destination,
+    map,
+    title: "Destination",
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 8,
+      fillColor: "#2e94e7",
+      fillOpacity: 1,
+      strokeWeight: 2,
+      strokeColor: "white"
+    }
+  });
+
+  infoWin.close();
+
+  const sikka = findSikkaByLatLng(destination.lat, destination.lng);
+
+  autoInfo = new google.maps.InfoWindow({
+    content: `
+      <div style="font-weight:800;font-size:16px">
+        Please feel free to talk with your senior batchmates For further guidance. <br><br>
+        ඔබට අවශ්‍ය සහය සදහා ජ්‍යෙෂ්ඨ මිතුරන් හමුවන්න. <br><br>
+        <center>
+        <table style="border:1px solid white;">
+          <tr>
+            <th style="border:1px solid white; padding:5px; border-right: 1px solid black; border-bottom: 1px solid black;">${sikka.sikka1}</th><th style="border:1px solid white; padding:5px; border-bottom: 1px solid black;">${sikka.sikka2}</th>
+          </tr>
+          <tr>
+            <td style="border:1px solid white; padding:5px; border-right: 1px solid black;">${sikka.sikka1_no}</td><td style="border:1px solid white; padding:5px">${sikka.sikka2_no}</td>
+          </tr>
+        </table>
+        </center>
+      </div>
+    `
+  });
+
+  autoInfo.open({ anchor: autoend, map });
 
   nav_btn.style.display = "none";
   loader_nav.style.display = "flex";
